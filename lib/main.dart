@@ -130,3 +130,5 @@ class Rotation extends StatelessWidget {
         child: child,
       );
 }
+
+const yandexLogo = 'https://avatars.githubusercontent.com/u/7409213';
