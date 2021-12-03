@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:math';
 
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -79,26 +79,30 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(18.0),
-      child: GestureDetector(
-        onTap: () {
+      child: FlipCard(
+        direction: FlipDirection.VERTICAL,
+        front: _card(true),
+        back: _card(false),
+        onFlip: () {
           setState(() => isFront = !isFront);
           if (!isFront) {
             _getJoke();
           }
         },
-        child: Rotation(
-          child: Card(
-            key: ValueKey(isFront),
-            child: Center(
-              child: Text(
-                (isFront ? widget.front : _congratulation ?? widget.back) ?? '',
-                style: TextStyle(fontSize: isFront ? 100 : 24),
-              ),
-            ),
-            color: widget.color,
-          ),
+      ),
+    );
+  }
+
+  Widget _card(bool isFront) {
+    return Card(
+      key: ValueKey(isFront),
+      child: Center(
+        child: Text(
+          (isFront ? widget.front : _congratulation ?? widget.back) ?? '',
+          style: TextStyle(fontSize: isFront ? 100 : 24),
         ),
       ),
+      color: widget.color,
     );
   }
 }
@@ -122,30 +126,6 @@ class Snowman {
   static const icon = '☃️';
   static const text = 'Я Снеговик! Желаю тебе хорошо сдать сессию 🌚';
   static const color = Colors.white;
-}
-
-class Rotation extends StatelessWidget {
-  final Widget? child;
-
-  const Rotation({Key? key, this.child}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) => AnimatedSwitcher(
-        duration: const Duration(milliseconds: 500),
-        transitionBuilder: (Widget widget, Animation<double> animation) {
-          final rotate = Tween(begin: pi, end: 0.0).animate(animation);
-          return AnimatedBuilder(
-            animation: rotate,
-            child: widget,
-            builder: (context, widget) => Transform(
-              transform: Matrix4.rotationX(rotate.value),
-              child: widget,
-              alignment: Alignment.center,
-            ),
-          );
-        },
-        child: child,
-      );
 }
 
 const yandexLogo = 'https://avatars.githubusercontent.com/u/7409213';
