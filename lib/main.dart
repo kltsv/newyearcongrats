@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 void main() => runApp(const MyApp());
 
@@ -62,19 +64,34 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   var isFront = true;
+  String? _congratulation;
+
+  @override
+  void initState() {
+    super.initState();
+    _getJoke();
+  }
+
+  void _getJoke() => get(Uri.parse('https://api.chucknorris.io/jokes/random'))
+      .then((value) => _congratulation = jsonDecode(value.body)['value']);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: GestureDetector(
-        onTap: () => setState(() => isFront = !isFront),
+        onTap: () {
+          setState(() => isFront = !isFront);
+          if (!isFront) {
+            _getJoke();
+          }
+        },
         child: Rotation(
           child: Card(
             key: ValueKey(isFront),
             child: Center(
               child: Text(
-                (isFront ? widget.front : widget.back) ?? '',
+                (isFront ? widget.front : _congratulation ?? widget.back) ?? '',
                 style: TextStyle(fontSize: isFront ? 100 : 24),
               ),
             ),
