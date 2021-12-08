@@ -10,6 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  http: any
+  flip_card: any
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
